@@ -1,9 +1,24 @@
 import "dotenv/config";
 
 import app from "./app.js";
+import { testDatabaseConnection } from "./config/db.js";
 
-const port = Number(process.env.PORT) || 5000;
+const DEFAULT_PORT = 5000;
+const HOST = "0.0.0.0";
 
-app.listen(port, "0.0.0.0", () => {
-  console.log(`Server running on port ${port}`);
-});
+const port = Number(process.env.PORT) || DEFAULT_PORT;
+
+async function startServer(): Promise<void> {
+  try {
+    await testDatabaseConnection();
+
+    app.listen(port, HOST, () => {
+      console.log(`Product Catalogue API is running on port ${port}`);
+    });
+  } catch (error: unknown) {
+    console.error("Failed to start the server:", error);
+    process.exit(1);
+  }
+}
+
+void startServer();

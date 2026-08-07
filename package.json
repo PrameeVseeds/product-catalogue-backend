@@ -1,0 +1,15 @@
+{
+  "name": "product-catalogue-backend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Backend REST API for the product catalogue and CMS system",
+  "main": "dist/server.js",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "typecheck": "tsc --noEmit",
+    "build": "tsc",
+    "start": "node dist/server.js"
+  },
+  "license": "UNLICENSED"
+}

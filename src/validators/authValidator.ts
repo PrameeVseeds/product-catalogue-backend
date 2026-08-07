@@ -3,9 +3,7 @@ import { getString, type ValidationResult } from "./validationUtils.js";
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-export const validateLogin = (
-  body: Record<string, unknown>
-): ValidationResult<LoginRequest> => {
+export const validateLogin = (body: Record<string, unknown>): ValidationResult<LoginRequest> => {
   const email = getString(body.email);
   const password = getString(body.password);
 

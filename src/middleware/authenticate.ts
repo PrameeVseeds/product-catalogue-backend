@@ -7,11 +7,7 @@ export interface AuthenticationRequest extends Request {
   admin?: AuthenticatedAdmin;
 }
 
-export const authenticate = async (
-  req: AuthenticationRequest,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
+export const authenticate = async (req: AuthenticationRequest,res: Response,next: NextFunction): Promise<void> => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader?.startsWith("Bearer ")) {

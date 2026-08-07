@@ -12,9 +12,7 @@ const adminSelectFields = `
   updated_at
 `;
 
-export const findAdminByEmail = async (
-  email: string
-): Promise<AdminRow | null> => {
+export const findAdminByEmail = async (email: string): Promise<AdminRow | null> => {
   const [rows] = await pool.execute<AdminRow[]>(
     `
       SELECT ${adminSelectFields}
@@ -28,9 +26,7 @@ export const findAdminByEmail = async (
   return rows[0] ?? null;
 };
 
-export const findAdminById = async (
-  adminId: number
-): Promise<AdminRow | null> => {
+export const findAdminById = async (adminId: number): Promise<AdminRow | null> => {
   const [rows] = await pool.execute<AdminRow[]>(
     `
       SELECT ${adminSelectFields}
@@ -44,11 +40,7 @@ export const findAdminById = async (
   return rows[0] ?? null;
 };
 
-export const createAdmin = async (
-  name: string,
-  email: string,
-  passwordHash: string
-): Promise<number> => {
+export const createAdmin = async (name: string,email: string,passwordHash: string): Promise<number> => {
   const [result] = await pool.execute<ResultSetHeader>(
     `
       INSERT INTO admins (

@@ -10,9 +10,7 @@ const normalizeEmail = (email: string): string => {
   return email.trim().toLowerCase();
 };
 
-export const loginAdmin = async (
-  input: LoginRequest
-): Promise<LoginResponse | null> => {
+export const loginAdmin = async (input: LoginRequest): Promise<LoginResponse | null> => {
   const admin = await adminRepository.findAdminByEmail(
     normalizeEmail(input.email)
   );

@@ -3,6 +3,7 @@ import authRoutes from "./authRoutes.js";
 import brandRoutes from "./brandRoutes.js";
 import categoryBrandRoutes from "./categoryBrandRoutes.js";
 import categoryRoutes from "./categoryRoutes.js";
+import datasheetRoutes from "./datasheetRoutes.js";
 import productRoutes from "./productRoutes.js";
 import settingsRoutes from "./settingsRoutes.js";
 import subcategoryRoutes from "./subcategoryRoutes.js";
@@ -22,6 +23,7 @@ router.use(categoryRoutes);
 router.use(brandRoutes);
 router.use(categoryBrandRoutes);
 router.use(subcategoryRoutes);
+router.use(datasheetRoutes);
 router.use(productRoutes);
 
 export default router;

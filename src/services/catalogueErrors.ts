@@ -1,0 +1,16 @@
+export const catalogueErrors = {
+  categorySlugExists: "CATEGORY_SLUG_EXISTS",
+  brandSlugExists: "BRAND_SLUG_EXISTS",
+  categoryBrandExists: "CATEGORY_BRAND_EXISTS",
+  subcategorySlugExists: "SUBCATEGORY_SLUG_EXISTS",
+  productSlugExists: "PRODUCT_SLUG_EXISTS",
+  categoryHasRelations: "CATEGORY_HAS_RELATIONS",
+  brandHasRelations: "BRAND_HAS_RELATIONS",
+  categoryBrandHasSubcategories: "CATEGORY_BRAND_HAS_SUBCATEGORIES",
+  subcategoryHasProducts: "SUBCATEGORY_HAS_PRODUCTS",
+  categoryNotFound: "CATEGORY_NOT_FOUND",
+  brandNotFound: "BRAND_NOT_FOUND",
+  categoryBrandNotFound: "CATEGORY_BRAND_NOT_FOUND",
+  subcategoryNotFound: "SUBCATEGORY_NOT_FOUND",
+  productNotFound: "PRODUCT_NOT_FOUND",
+} as const;

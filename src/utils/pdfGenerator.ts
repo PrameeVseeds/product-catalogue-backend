@@ -66,10 +66,10 @@ const addWrappedText = (doc: PDFKit.PDFDocument,text: string | null,fallback = "
 
 const getPrimaryImageUrl = (data: DatasheetData): string | null => {
   const primaryImage = data.product.galleryImages.find((image) =>
-    Boolean(image.is_primary)
+    Boolean(image.isPrimary)
   );
 
-  return primaryImage?.image_url ?? data.product.main_image_url;
+  return primaryImage?.imageUrl ?? data.product.mainImageUrl;
 };
 
 export const createProductDatasheetPdf = (data: DatasheetData): PDFKit.PDFDocument => {
@@ -100,12 +100,12 @@ export const createProductDatasheetPdf = (data: DatasheetData): PDFKit.PDFDocume
     });
 
   doc.moveDown(3);
-  doc.fontSize(24).fillColor("#111827").text(product.datasheet_title || product.name, {
+  doc.fontSize(24).fillColor("#111827").text(product.datasheetTitle || product.name, {
     width: contentWidth,
   });
 
-  if (product.model_number) {
-    doc.moveDown(0.3).fontSize(11).fillColor("#4b5563").text(`Model: ${product.model_number}`);
+  if (product.modelNumber) {
+    doc.moveDown(0.3).fontSize(11).fillColor("#4b5563").text(`Model: ${product.modelNumber}`);
   }
 
   const metaItems = [
@@ -129,8 +129,8 @@ export const createProductDatasheetPdf = (data: DatasheetData): PDFKit.PDFDocume
   addSectionTitle(doc, "Overview");
   addWrappedText(
     doc,
-    product.datasheet_description ||
-      product.short_description ||
+    product.datasheetDescription ||
+      product.shortDescription ||
       product.description
   );
 
@@ -140,7 +140,7 @@ export const createProductDatasheetPdf = (data: DatasheetData): PDFKit.PDFDocume
       doc
         .fontSize(10)
         .fillColor("#374151")
-        .text(`- ${feature.feature_text}`, { width: contentWidth, lineGap: 4 });
+        .text(`- ${feature.featureText}`, { width: contentWidth, lineGap: 4 });
     });
   }
 
@@ -154,11 +154,11 @@ export const createProductDatasheetPdf = (data: DatasheetData): PDFKit.PDFDocume
       doc
         .fontSize(9)
         .fillColor("#111827")
-        .text(specification.specification_name, pageMargin + 8, y + 4, {
+        .text(specification.specificationName, pageMargin + 8, y + 4, {
           width: 170,
         })
         .fillColor("#374151")
-        .text(specification.specification_value, pageMargin + 190, y + 4, {
+        .text(specification.specificationValue, pageMargin + 190, y + 4, {
           width: 285,
         });
       doc.y = y + 26;

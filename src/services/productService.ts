@@ -5,6 +5,7 @@ import * as productFeatureRepository from "../repositories/productFeatureReposit
 import * as productImageRepository from "../repositories/productImageRepository.js";
 import * as productSpecificationRepository from "../repositories/productSpecificationRepository.js";
 import * as subcategoryRepository from "../repositories/subcategoryRepository.js";
+import {mapProduct,mapProductFeature,mapProductImage,mapProductSpecification,} from "../utils/catalogueMapper.js";
 import { normalizeSlug } from "../utils/slugUtils.js";
 import { catalogueErrors } from "./catalogueErrors.js";
 
@@ -37,7 +38,7 @@ export const getProductDetailBySlug = async (slug: string) => {
     ]);
 
   return {
-    ...product,
+    ...mapProduct(product),
     category: relations
       ? {
           id: relations.category_id,
@@ -59,9 +60,9 @@ export const getProductDetailBySlug = async (slug: string) => {
           slug: relations.subcategory_slug,
         }
       : null,
-    galleryImages,
-    features,
-    specifications,
+    galleryImages: galleryImages.map(mapProductImage),
+    features: features.map(mapProductFeature),
+    specifications: specifications.map(mapProductSpecification),
   };
 };
 

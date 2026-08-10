@@ -7,6 +7,7 @@ import datasheetRoutes from "./datasheetRoutes.js";
 import enquiryRoutes from "./enquiryRoutes.js";
 import productRoutes from "./productRoutes.js";
 import settingsRoutes from "./settingsRoutes.js";
+import siteContentRoutes from "./siteContentRoutes.js";
 import subcategoryRoutes from "./subcategoryRoutes.js";
 import uploadRoutes from "./uploadRoutes.js";
 
@@ -21,6 +22,7 @@ router.get("/health", (_req: Request, res: Response) => {
 
 router.use("/auth", authRoutes);
 router.use(settingsRoutes);
+router.use(siteContentRoutes);
 router.use(categoryRoutes);
 router.use(brandRoutes);
 router.use(categoryBrandRoutes);

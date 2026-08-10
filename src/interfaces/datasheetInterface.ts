@@ -1,8 +1,7 @@
-import type {ContactSettingsRow,SiteSettingsRow,} from "../models/settingsModel.js";
-import type { ProductFeatureRow } from "../models/productFeatureModel.js";
-import type { ProductImageRow } from "../models/productImageModel.js";
-import type { ProductRow } from "../models/productModel.js";
-import type { ProductSpecificationRow } from "../models/productSpecificationModel.js";
+import type {
+  ContactSettingsRow,
+  SiteSettingsRow,
+} from "../models/settingsModel.js";
 
 export interface DatasheetSummary {
   id: number;
@@ -10,13 +9,51 @@ export interface DatasheetSummary {
   slug: string;
 }
 
-export interface DatasheetProduct extends ProductRow {
+export interface DatasheetProduct {
+  id: number;
+  subcategoryId: number;
+  name: string;
+  slug: string;
+  modelNumber: string | null;
+  shortDescription: string | null;
+  description: string | null;
+  mainImageUrl: string | null;
+  datasheetTitle: string | null;
+  datasheetDescription: string | null;
+  metaTitle: string | null;
+  metaDescription: string | null;
+  isFeatured: boolean;
+  isActive: boolean;
+  displayOrder: number;
+  createdAt: Date;
+  updatedAt: Date;
   category: DatasheetSummary | null;
   brand: DatasheetSummary | null;
   subcategory: DatasheetSummary | null;
-  galleryImages: ProductImageRow[];
-  features: ProductFeatureRow[];
-  specifications: ProductSpecificationRow[];
+  galleryImages: Array<{
+    id: number;
+    productId: number;
+    imageUrl: string;
+    altText: string | null;
+    displayOrder: number;
+    isPrimary: boolean;
+    createdAt: Date;
+  }>;
+  features: Array<{
+    id: number;
+    productId: number;
+    featureText: string;
+    displayOrder: number;
+    createdAt: Date;
+  }>;
+  specifications: Array<{
+    id: number;
+    productId: number;
+    specificationName: string;
+    specificationValue: string;
+    displayOrder: number;
+    createdAt: Date;
+  }>;
 }
 
 export interface DatasheetData {

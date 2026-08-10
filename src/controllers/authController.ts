@@ -1,5 +1,4 @@
 import type { Request, Response } from "express";
-import type { AuthenticationRequest } from "../middleware/authenticate.js";
 import { loginAdmin } from "../services/authService.js";
 import { sendBadRequest } from "../utils/responseHelper.js";
 import { validateLogin } from "../validators/authValidator.js";
@@ -44,14 +43,4 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       message: "Internal server error.",
     });
   }
-};
-
-export const getAdminTest = (req: AuthenticationRequest,res: Response): void => {
-  res.status(200).json({
-    success: true,
-    message: "Protected admin route is working.",
-    data: {
-      admin: req.admin,
-    },
-  });
 };

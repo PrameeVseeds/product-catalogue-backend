@@ -59,7 +59,7 @@ export const findEnquiries = async (filters: EnquiryListFilters): Promise<Enquir
      LIMIT ?
      OFFSET ?`;
 
-  const [rows] = await pool.execute({ sql }, [
+  const [rows] = await pool.query({ sql }, [
     ...values,
     filters.limit,
     offset,

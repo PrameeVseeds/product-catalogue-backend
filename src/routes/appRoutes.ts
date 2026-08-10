@@ -8,6 +8,7 @@ import enquiryRoutes from "./enquiryRoutes.js";
 import productRoutes from "./productRoutes.js";
 import settingsRoutes from "./settingsRoutes.js";
 import subcategoryRoutes from "./subcategoryRoutes.js";
+import uploadRoutes from "./uploadRoutes.js";
 
 const router = Router();
 
@@ -27,5 +28,6 @@ router.use(subcategoryRoutes);
 router.use(datasheetRoutes);
 router.use(productRoutes);
 router.use(enquiryRoutes);
+router.use(uploadRoutes);
 
 export default router;

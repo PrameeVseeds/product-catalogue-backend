@@ -1,4 +1,5 @@
 import express from "express";
+import path from "path";
 import apiRoutes from "./routes/appRoutes.js";
 
 const app = express();
@@ -12,6 +13,7 @@ app.get("/", (_req, res) => {
   });
 });
 
+app.use("/uploads", express.static(path.resolve("uploads")));
 app.use("/api", apiRoutes);
 
 export default app;

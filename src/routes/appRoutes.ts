@@ -4,6 +4,7 @@ import brandRoutes from "./brandRoutes.js";
 import categoryBrandRoutes from "./categoryBrandRoutes.js";
 import categoryRoutes from "./categoryRoutes.js";
 import datasheetRoutes from "./datasheetRoutes.js";
+import enquiryRoutes from "./enquiryRoutes.js";
 import productRoutes from "./productRoutes.js";
 import settingsRoutes from "./settingsRoutes.js";
 import subcategoryRoutes from "./subcategoryRoutes.js";
@@ -25,5 +26,6 @@ router.use(categoryBrandRoutes);
 router.use(subcategoryRoutes);
 router.use(datasheetRoutes);
 router.use(productRoutes);
+router.use(enquiryRoutes);
 
 export default router;

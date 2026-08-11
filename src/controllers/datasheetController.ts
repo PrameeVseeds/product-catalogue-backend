@@ -1,5 +1,7 @@
 import type { Request, Response } from "express";
+import fs from "fs";
 import { getProductDatasheetData } from "../services/datasheetService.js";
+import { resolveDatasheetUploadPath } from "../services/uploadService.js";
 import { sendBadRequest } from "../utils/responseHelper.js";
 import { createProductDatasheetPdf } from "../utils/pdfGenerator.js";
 import { normalizeSlug } from "../utils/slugUtils.js";
@@ -25,6 +27,31 @@ export const getProductDatasheet = async (req: Request,res: Response): Promise<v
         message: "Product not found.",
       });
       return;
+    }
+
+    const storedPath = datasheetData.product.datasheetFileUrl;
+    if (storedPath) {
+      const uploadedPath = resolveDatasheetUploadPath(storedPath);
+      if (uploadedPath) {
+        try {
+          await fs.promises.access(uploadedPath, fs.constants.R_OK);
+          res.setHeader("Content-Type", "application/pdf");
+          res.setHeader(
+            "Content-Disposition",
+            `inline; filename="${getSafeDatasheetFilename(slug)}"`,
+          );
+          res.sendFile(uploadedPath);
+          return;
+        } catch {
+          console.warn(
+            `Uploaded datasheet is unavailable for product ${slug}; using generated PDF.`,
+          );
+        }
+      } else {
+        console.warn(
+          `Stored datasheet path is invalid for product ${slug}; using generated PDF.`,
+        );
+      }
     }
 
     const document = createProductDatasheetPdf(datasheetData);

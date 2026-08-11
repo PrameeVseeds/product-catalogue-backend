@@ -113,8 +113,8 @@ export const createProduct = async (input: ProductInput): Promise<ProductRow | n
     `INSERT INTO products
        (subcategory_id, name, slug, model_number, short_description,
         description, main_image_url, datasheet_title, datasheet_description,
-        meta_title, meta_description, is_featured, is_active, display_order)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        datasheet_file_url, meta_title, meta_description, is_featured, is_active, display_order)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       input.subcategoryId,
       input.name,
@@ -125,6 +125,7 @@ export const createProduct = async (input: ProductInput): Promise<ProductRow | n
       input.mainImageUrl,
       input.datasheetTitle,
       input.datasheetDescription,
+      input.datasheetFileUrl,
       input.metaTitle,
       input.metaDescription,
       input.isFeatured,
@@ -148,6 +149,7 @@ export const updateProduct = async (productId: number,input: ProductInput): Prom
          main_image_url = ?,
          datasheet_title = ?,
          datasheet_description = ?,
+         datasheet_file_url = ?,
          meta_title = ?,
          meta_description = ?,
          is_featured = ?,
@@ -164,6 +166,7 @@ export const updateProduct = async (productId: number,input: ProductInput): Prom
       input.mainImageUrl,
       input.datasheetTitle,
       input.datasheetDescription,
+      input.datasheetFileUrl,
       input.metaTitle,
       input.metaDescription,
       input.isFeatured,

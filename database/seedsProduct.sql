@@ -463,6 +463,7 @@ CREATE TABLE `products` (
   `main_image_url` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `datasheet_title` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `datasheet_description` text COLLATE utf8mb4_unicode_ci,
+  `datasheet_file_url` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `meta_title` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `meta_description` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `is_featured` tinyint(1) NOT NULL DEFAULT '0',

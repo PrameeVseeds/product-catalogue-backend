@@ -1,5 +1,15 @@
 import { Router, type Request, type Response } from "express";
 import authRoutes from "./authRoutes.js";
+import brandRoutes from "./brandRoutes.js";
+import categoryBrandRoutes from "./categoryBrandRoutes.js";
+import categoryRoutes from "./categoryRoutes.js";
+import datasheetRoutes from "./datasheetRoutes.js";
+import enquiryRoutes from "./enquiryRoutes.js";
+import productRoutes from "./productRoutes.js";
+import settingsRoutes from "./settingsRoutes.js";
+import siteContentRoutes from "./siteContentRoutes.js";
+import subcategoryRoutes from "./subcategoryRoutes.js";
+import uploadRoutes from "./uploadRoutes.js";
 
 const router = Router();
 
@@ -11,5 +21,15 @@ router.get("/health", (_req: Request, res: Response) => {
 });
 
 router.use("/auth", authRoutes);
+router.use(settingsRoutes);
+router.use(siteContentRoutes);
+router.use(categoryRoutes);
+router.use(brandRoutes);
+router.use(categoryBrandRoutes);
+router.use(subcategoryRoutes);
+router.use(datasheetRoutes);
+router.use(productRoutes);
+router.use(enquiryRoutes);
+router.use(uploadRoutes);
 
 export default router;

@@ -2,7 +2,8 @@ import type { RowDataPacket } from "mysql2";
 
 export interface SubcategoryRow extends RowDataPacket {
   id: number;
-  category_brand_id: number;
+  category_id: number;
+  category_brand_id: number | null;
   name: string;
   slug: string;
   description: string | null;

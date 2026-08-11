@@ -53,10 +53,11 @@ export const findActiveSubcategoryBySlug = async (slug: string): Promise<Subcate
 export const createSubcategory = async (input: SubcategoryInput): Promise<SubcategoryRow | null> => {
   const [result] = await pool.execute<ResultSetHeader>(
     `INSERT INTO subcategories
-       (category_brand_id, name, slug, description, image_url,
+       (category_id, category_brand_id, name, slug, description, image_url,
         display_order, is_active)
-     VALUES (?, ?, ?, ?, ?, ?, ?)`,
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
     [
+      input.categoryId,
       input.categoryBrandId,
       input.name,
       input.slug,
@@ -73,7 +74,8 @@ export const createSubcategory = async (input: SubcategoryInput): Promise<Subcat
 export const updateSubcategory = async (subcategoryId: number,input: SubcategoryInput): Promise<boolean> => {
   const [result] = await pool.execute<ResultSetHeader>(
     `UPDATE subcategories
-     SET category_brand_id = ?,
+     SET category_id = ?,
+         category_brand_id = ?,
          name = ?,
          slug = ?,
          description = ?,
@@ -82,6 +84,7 @@ export const updateSubcategory = async (subcategoryId: number,input: Subcategory
          is_active = ?
      WHERE id = ?`,
     [
+      input.categoryId,
       input.categoryBrandId,
       input.name,
       input.slug,

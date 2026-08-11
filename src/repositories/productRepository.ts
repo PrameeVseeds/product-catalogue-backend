@@ -48,9 +48,9 @@ export const findProducts = async (filters: ProductListFilters,activeOnly: boole
   const sql = `SELECT p.*
      FROM products p
      INNER JOIN subcategories s ON s.id = p.subcategory_id
-     INNER JOIN category_brands cb ON cb.id = s.category_brand_id
-     INNER JOIN categories c ON c.id = cb.category_id
-     INNER JOIN brands b ON b.id = cb.brand_id
+     LEFT JOIN category_brands cb ON cb.id = s.category_brand_id
+     INNER JOIN categories c ON c.id = s.category_id
+     LEFT JOIN brands b ON b.id = cb.brand_id
      ${whereSql}
      ORDER BY p.display_order ASC, p.created_at DESC`;
   const [rows] = await pool.execute({ sql }, values);
@@ -97,9 +97,9 @@ export const findProductRelations = async (productId: number): Promise<ProductRe
        s.slug AS subcategory_slug
      FROM products p
      INNER JOIN subcategories s ON s.id = p.subcategory_id
-     INNER JOIN category_brands cb ON cb.id = s.category_brand_id
-     INNER JOIN categories c ON c.id = cb.category_id
-     INNER JOIN brands b ON b.id = cb.brand_id
+     LEFT JOIN category_brands cb ON cb.id = s.category_brand_id
+     INNER JOIN categories c ON c.id = s.category_id
+     LEFT JOIN brands b ON b.id = cb.brand_id
      WHERE p.id = ?
      LIMIT 1`,
     [productId]

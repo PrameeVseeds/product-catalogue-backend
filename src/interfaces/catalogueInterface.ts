@@ -28,7 +28,8 @@ export interface CategoryBrandInput {
 }
 
 export interface SubcategoryInput {
-  categoryBrandId: number;
+  categoryId: number;
+  categoryBrandId: number | null;
   name: string;
   slug: string;
   description: string | null;

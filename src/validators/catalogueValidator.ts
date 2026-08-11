@@ -1,12 +1,30 @@
-import type {BrandInput,CategoryBrandInput,CategoryInput,ProductFeatureInput,ProductImageInput,
-  ProductInput,ProductListFilters,ProductSpecificationInput,SubcategoryInput,} from "../interfaces/catalogueInterface.js";
+import type {
+  BrandInput,
+  CategoryBrandInput,
+  CategoryInput,
+  ProductFeatureInput,
+  ProductImageInput,
+  ProductInput,
+  ProductListFilters,
+  ProductSpecificationInput,
+  SubcategoryInput,
+} from "../interfaces/catalogueInterface.js";
 import { normalizeSlug } from "../utils/slugUtils.js";
-import {getBoolean,getInteger,getNullableString,getRequiredString,validateId,validateNullableUrl,} from "./settingsValidationUtils.js";
+import {
+  getBoolean,
+  getInteger,
+  getNullableString,
+  getRequiredString,
+  validateId,
+  validateNullableUrl,
+} from "./settingsValidationUtils.js";
 import type { ValidationResult } from "./validationUtils.js";
 
 const toBody = (body: Record<string, unknown>): Record<string, unknown> => body;
 
-const validateSlug = (body: Record<string, unknown>): ValidationResult<string> => {
+const validateSlug = (
+  body: Record<string, unknown>,
+): ValidationResult<string> => {
   const slug = getRequiredString(body, "slug", "Slug");
 
   if (!slug.isValid) return slug;
@@ -26,11 +44,17 @@ const validateSlug = (body: Record<string, unknown>): ValidationResult<string> =
   };
 };
 
-const validateOptionalUrl = (value: unknown,label: string): ValidationResult<string | null> => {
+const validateOptionalUrl = (
+  value: unknown,
+  label: string,
+): ValidationResult<string | null> => {
   return validateNullableUrl(getNullableString(value), label);
 };
 
-const validateRequiredUrl = (value: unknown,label: string): ValidationResult<string> => {
+const validateRequiredUrl = (
+  value: unknown,
+  label: string,
+): ValidationResult<string> => {
   const url = getRequiredString({ value }, "value", label);
 
   if (!url.isValid) return url;
@@ -50,7 +74,9 @@ const validateRequiredUrl = (value: unknown,label: string): ValidationResult<str
   };
 };
 
-export const validateCategory = (rawBody: Record<string, unknown>): ValidationResult<CategoryInput> => {
+export const validateCategory = (
+  rawBody: Record<string, unknown>,
+): ValidationResult<CategoryInput> => {
   const body = toBody(rawBody);
   const name = getRequiredString(body, "name", "Name");
   const slug = validateSlug(body);
@@ -71,7 +97,9 @@ export const validateCategory = (rawBody: Record<string, unknown>): ValidationRe
   };
 };
 
-export const validateBrand = (rawBody: Record<string, unknown>): ValidationResult<BrandInput> => {
+export const validateBrand = (
+  rawBody: Record<string, unknown>,
+): ValidationResult<BrandInput> => {
   const body = toBody(rawBody);
   const name = getRequiredString(body, "name", "Name");
   const slug = validateSlug(body);
@@ -98,7 +126,9 @@ export const validateBrand = (rawBody: Record<string, unknown>): ValidationResul
   };
 };
 
-export const validateCategoryBrand = (body: Record<string, unknown>): ValidationResult<CategoryBrandInput> => {
+export const validateCategoryBrand = (
+  body: Record<string, unknown>,
+): ValidationResult<CategoryBrandInput> => {
   const categoryId = validateId(body.categoryId?.toString(), "Category ID");
   const brandId = validateId(body.brandId?.toString(), "Brand ID");
 
@@ -116,22 +146,31 @@ export const validateCategoryBrand = (body: Record<string, unknown>): Validation
   };
 };
 
-export const validateSubcategory = (body: Record<string, unknown>): ValidationResult<SubcategoryInput> => {
-  const categoryBrandId = validateId(
-    body.categoryBrandId?.toString(),
-    "Category brand ID"
-  );
+export const validateSubcategory = (
+  body: Record<string, unknown>,
+): ValidationResult<SubcategoryInput> => {
+  const categoryId = validateId(body.categoryId?.toString(), "Category ID");
+  const categoryBrandValue = body.categoryBrandId;
+  const categoryBrandId =
+    categoryBrandValue === undefined ||
+    categoryBrandValue === null ||
+    categoryBrandValue === "" ||
+    categoryBrandValue === 0
+      ? null
+      : validateId(categoryBrandValue.toString(), "Category brand ID");
   const name = getRequiredString(body, "name", "Name");
   const slug = validateSlug(body);
 
-  if (!categoryBrandId.isValid) return categoryBrandId;
+  if (!categoryId.isValid) return categoryId;
+  if (categoryBrandId && !categoryBrandId.isValid) return categoryBrandId;
   if (!name.isValid) return name;
   if (!slug.isValid) return slug;
 
   return {
     isValid: true,
     data: {
-      categoryBrandId: categoryBrandId.data,
+      categoryId: categoryId.data,
+      categoryBrandId: categoryBrandId ? categoryBrandId.data : null,
       name: name.data,
       slug: slug.data,
       description: getNullableString(body.description),
@@ -142,8 +181,13 @@ export const validateSubcategory = (body: Record<string, unknown>): ValidationRe
   };
 };
 
-export const validateProduct = (body: Record<string, unknown>): ValidationResult<ProductInput> => {
-  const subcategoryId = validateId(body.subcategoryId?.toString(), "Subcategory ID");
+export const validateProduct = (
+  body: Record<string, unknown>,
+): ValidationResult<ProductInput> => {
+  const subcategoryId = validateId(
+    body.subcategoryId?.toString(),
+    "Subcategory ID",
+  );
   const name = getRequiredString(body, "name", "Name");
   const slug = validateSlug(body);
 
@@ -172,7 +216,9 @@ export const validateProduct = (body: Record<string, unknown>): ValidationResult
   };
 };
 
-export const validateProductFilters = (query: Record<string, unknown>): ProductListFilters => {
+export const validateProductFilters = (
+  query: Record<string, unknown>,
+): ProductListFilters => {
   const featured = getNullableString(query.featured);
 
   return {
@@ -187,7 +233,9 @@ export const validateProductFilters = (query: Record<string, unknown>): ProductL
   };
 };
 
-export const validateProductImage = (body: Record<string, unknown>): ValidationResult<ProductImageInput> => {
+export const validateProductImage = (
+  body: Record<string, unknown>,
+): ValidationResult<ProductImageInput> => {
   const productId = validateId(body.productId?.toString(), "Product ID");
   const imageUrl = validateRequiredUrl(body.imageUrl, "Image URL");
 
@@ -206,7 +254,9 @@ export const validateProductImage = (body: Record<string, unknown>): ValidationR
   };
 };
 
-export const validateProductFeature = (body: Record<string, unknown>): ValidationResult<ProductFeatureInput> => {
+export const validateProductFeature = (
+  body: Record<string, unknown>,
+): ValidationResult<ProductFeatureInput> => {
   const productId = validateId(body.productId?.toString(), "Product ID");
   const featureText = getRequiredString(body, "featureText", "Feature text");
 
@@ -223,17 +273,19 @@ export const validateProductFeature = (body: Record<string, unknown>): Validatio
   };
 };
 
-export const validateProductSpecification = (body: Record<string, unknown>): ValidationResult<ProductSpecificationInput> => {
+export const validateProductSpecification = (
+  body: Record<string, unknown>,
+): ValidationResult<ProductSpecificationInput> => {
   const productId = validateId(body.productId?.toString(), "Product ID");
   const specificationName = getRequiredString(
     body,
     "specificationName",
-    "Specification name"
+    "Specification name",
   );
   const specificationValue = getRequiredString(
     body,
     "specificationValue",
-    "Specification value"
+    "Specification value",
   );
 
   if (!productId.isValid) return productId;

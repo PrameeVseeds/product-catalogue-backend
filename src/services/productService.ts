@@ -39,14 +39,14 @@ export const getProductDetailBySlug = async (slug: string) => {
 
   return {
     ...mapProduct(product),
-    category: relations
+    category: relations?.category_id && relations.category_name && relations.category_slug
       ? {
           id: relations.category_id,
           name: relations.category_name,
           slug: relations.category_slug,
         }
       : null,
-    brand: relations
+    brand: relations?.brand_id && relations.brand_name && relations.brand_slug
       ? {
           id: relations.brand_id,
           name: relations.brand_name,

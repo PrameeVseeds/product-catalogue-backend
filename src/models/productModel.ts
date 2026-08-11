@@ -21,12 +21,12 @@ export interface ProductRow extends RowDataPacket {
 }
 
 export interface ProductRelationSummaryRow extends RowDataPacket {
-  category_id: number;
-  category_name: string;
-  category_slug: string;
-  brand_id: number;
-  brand_name: string;
-  brand_slug: string;
+  category_id: number | null;
+  category_name: string | null;
+  category_slug: string | null;
+  brand_id: number | null;
+  brand_name: string | null;
+  brand_slug: string | null;
   subcategory_id: number;
   subcategory_name: string;
   subcategory_slug: string;

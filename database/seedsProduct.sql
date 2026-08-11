@@ -558,7 +558,8 @@ DROP TABLE IF EXISTS `subcategories`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `subcategories` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `category_brand_id` bigint unsigned NOT NULL,
+  `category_id` bigint unsigned NOT NULL,
+  `category_brand_id` bigint unsigned DEFAULT NULL,
   `name` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
   `slug` varchar(180) COLLATE utf8mb4_unicode_ci NOT NULL,
   `description` text COLLATE utf8mb4_unicode_ci,
@@ -569,8 +570,10 @@ CREATE TABLE `subcategories` (
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_subcategory_slug` (`slug`),
+  KEY `idx_subcategory_category` (`category_id`),
   KEY `idx_subcategory_category_brand` (`category_brand_id`),
-  CONSTRAINT `fk_subcategory_category_brand` FOREIGN KEY (`category_brand_id`) REFERENCES `category_brands` (`id`) ON DELETE CASCADE
+  CONSTRAINT `fk_subcategory_category` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE RESTRICT,
+  CONSTRAINT `fk_subcategory_category_brand` FOREIGN KEY (`category_brand_id`) REFERENCES `category_brands` (`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

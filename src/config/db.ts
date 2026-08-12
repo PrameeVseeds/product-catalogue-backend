@@ -2,6 +2,7 @@ import mysql from "mysql2/promise";
 
 const DEFAULT_DB_PORT = 3306;
 const DEFAULT_CONNECTION_LIMIT = 10;
+const DEFAULT_CONNECT_TIMEOUT_MS = 15_000;
 
 const { DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME } = process.env;
 
@@ -20,6 +21,9 @@ export const pool = mysql.createPool({
   waitForConnections: true,
   connectionLimit: DEFAULT_CONNECTION_LIMIT,
   queueLimit: 0,
+  connectTimeout: DEFAULT_CONNECT_TIMEOUT_MS,
+  enableKeepAlive: true,
+  keepAliveInitialDelay: 0,
 });
 
 export async function testDatabaseConnection(): Promise<void> {

@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 import PDFDocument from "pdfkit";
 import type { DatasheetData } from "../interfaces/datasheetInterface.js";
+import { uploadsRoot } from "../services/uploadService.js";
 
 const layout = {
   left: 44,
@@ -36,7 +37,6 @@ const resolveLocalImagePath = (imageUrl: string | null): string | null => {
     console.warn(`Datasheet image path is outside uploads: ${imageUrl}`);
     return null;
   }
-  const uploadsRoot = path.resolve("uploads");
   const imagePath = path.resolve(
     uploadsRoot,
     normalized.slice("uploads/".length),

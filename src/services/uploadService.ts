@@ -20,7 +20,7 @@ const allowedExtensionsByMimeType: Record<string, string[]> = {
   "image/webp": [".webp"],
 };
 
-export const uploadsRoot = path.resolve("uploads");
+export const uploadsRoot = path.resolve(process.env.UPLOAD_ROOT || "uploads");
 export const datasheetsUploadDirectory = path.join(uploadsRoot, "datasheets");
 
 export class UploadValidationError extends Error {}
@@ -67,6 +67,18 @@ export const isAllowedDatasheetFile = (mimeType: string, originalName: string): 
 
 export const createSafeDatasheetFilename = (): string =>
   `${Date.now()}-${crypto.randomBytes(12).toString("hex")}.pdf`;
+
+export const hasPdfSignature = async (filePath: string): Promise<boolean> => {
+  const file = await fs.promises.open(filePath, "r");
+  const signature = Buffer.alloc(5);
+
+  try {
+    const { bytesRead } = await file.read(signature, 0, signature.length, 0);
+    return bytesRead === signature.length && signature.toString("ascii") === "%PDF-";
+  } finally {
+    await file.close();
+  }
+};
 
 export const toPublicUploadPath = (file: Express.Multer.File): UploadedImageResponse => {
   const relativePath = path.relative(uploadsRoot, file.path).replace(/\\/g, "/");

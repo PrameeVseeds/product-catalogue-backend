@@ -14,6 +14,7 @@ export const mapProduct = (product: ProductRow) => ({
   mainImageUrl: product.main_image_url,
   datasheetTitle: product.datasheet_title,
   datasheetDescription: product.datasheet_description,
+  datasheetFileUrl: product.datasheet_file_url,
   metaTitle: product.meta_title,
   metaDescription: product.meta_description,
   isFeatured: Boolean(product.is_featured),

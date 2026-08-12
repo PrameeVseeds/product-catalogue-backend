@@ -1,8 +1,9 @@
 import { Router } from "express";
-import {deleteImage,uploadImage,uploadImages,} from "../controllers/uploadController.js";
+import {deleteImage,uploadDatasheet,uploadImage,uploadImages,} from "../controllers/uploadController.js";
 import { authenticate } from "../middleware/authenticate.js";
 import {getUploadErrorMessage,uploadMultipleImages,uploadSingleImage,} from "../middleware/uploadImage.js";
 import { sendBadRequest } from "../utils/responseHelper.js";
+import {getDatasheetUploadErrorMessage,uploadSingleDatasheet,} from "../middleware/uploadDatasheet.js";
 
 const router = Router();
 
@@ -39,5 +40,24 @@ router.post(
   uploadImages
 );
 router.delete("/admin/uploads/image", authenticate, deleteImage);
+router.post(
+  "/admin/uploads/datasheet",
+  authenticate,
+  (req, res, next) => {
+    uploadSingleDatasheet(req, res, (error: unknown) => {
+      if (!error) {
+        next();
+        return;
+      }
+      const message = getDatasheetUploadErrorMessage(error);
+      if (message) {
+        sendBadRequest(res, message);
+        return;
+      }
+      next(error);
+    });
+  },
+  uploadDatasheet,
+);
 
 export default router;

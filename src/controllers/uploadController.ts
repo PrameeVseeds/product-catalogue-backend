@@ -25,6 +25,20 @@ export const uploadImages = (req: Request, res: Response): void => {
   });
 };
 
+export const uploadDatasheet = (req: Request, res: Response): void => {
+  if (!req.file) {
+    sendBadRequest(res, "Datasheet PDF is required.");
+    return;
+  }
+
+  sendSuccess(
+    res,
+    201,
+    "Datasheet uploaded successfully.",
+    toPublicUploadPath(req.file),
+  );
+};
+
 export const deleteImage = async (req: Request,res: Response): Promise<void> => {
   const publicPath = typeof req.body.path === "string" ? req.body.path.trim() : "";
 

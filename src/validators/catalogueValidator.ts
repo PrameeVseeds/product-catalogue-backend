@@ -194,6 +194,16 @@ export const validateProduct = (
   if (!subcategoryId.isValid) return subcategoryId;
   if (!name.isValid) return name;
   if (!slug.isValid) return slug;
+  const datasheetFileUrl = getNullableString(body.datasheetFileUrl);
+  if (
+    datasheetFileUrl &&
+    !/^\/uploads\/datasheets\/[a-zA-Z0-9-]+\.pdf$/.test(datasheetFileUrl)
+  ) {
+    return {
+      isValid: false,
+      message: "Datasheet file path is invalid.",
+    };
+  }
 
   return {
     isValid: true,
@@ -207,6 +217,7 @@ export const validateProduct = (
       mainImageUrl: getNullableString(body.mainImageUrl),
       datasheetTitle: getNullableString(body.datasheetTitle),
       datasheetDescription: getNullableString(body.datasheetDescription),
+      datasheetFileUrl,
       metaTitle: getNullableString(body.metaTitle),
       metaDescription: getNullableString(body.metaDescription),
       isFeatured: getBoolean(body.isFeatured, false),

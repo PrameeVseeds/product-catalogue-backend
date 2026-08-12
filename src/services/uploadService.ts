@@ -21,6 +21,7 @@ const allowedExtensionsByMimeType: Record<string, string[]> = {
 };
 
 export const uploadsRoot = path.resolve("uploads");
+export const datasheetsUploadDirectory = path.join(uploadsRoot, "datasheets");
 
 export class UploadValidationError extends Error {}
 
@@ -61,6 +62,12 @@ export const createSafeFilename = (mimeType: string): string => {
   return `${Date.now()}-${crypto.randomBytes(12).toString("hex")}${extension}`;
 };
 
+export const isAllowedDatasheetFile = (mimeType: string, originalName: string): boolean =>
+  mimeType === "application/pdf" && path.extname(originalName).toLowerCase() === ".pdf";
+
+export const createSafeDatasheetFilename = (): string =>
+  `${Date.now()}-${crypto.randomBytes(12).toString("hex")}.pdf`;
+
 export const toPublicUploadPath = (file: Express.Multer.File): UploadedImageResponse => {
   const relativePath = path.relative(uploadsRoot, file.path).replace(/\\/g, "/");
 
@@ -81,6 +88,24 @@ const resolvePublicUploadPath = (publicPath: string): string | null => {
     resolvedPath === uploadsRoot || resolvedPath.startsWith(`${uploadsRoot}${path.sep}`);
 
   return isInsideUploads ? resolvedPath : null;
+};
+
+export const resolveDatasheetUploadPath = (publicPath: string): string | null => {
+  if (!publicPath.startsWith("/uploads/datasheets/")) return null;
+
+  const filename = publicPath.slice("/uploads/datasheets/".length);
+  if (
+    !filename ||
+    filename !== path.basename(filename) ||
+    path.extname(filename).toLowerCase() !== ".pdf"
+  ) {
+    return null;
+  }
+
+  const resolvedPath = path.resolve(datasheetsUploadDirectory, filename);
+  return resolvedPath.startsWith(`${datasheetsUploadDirectory}${path.sep}`)
+    ? resolvedPath
+    : null;
 };
 
 export const deleteUploadedImage = async (publicPath: string): Promise<boolean> => {

@@ -15,3 +15,5 @@ export interface UploadedImageResponse {
 export interface UploadedImagesResponse {
   paths: string[];
 }
+
+export type UploadedDatasheetResponse = UploadedImageResponse;

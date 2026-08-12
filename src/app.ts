@@ -1,7 +1,7 @@
 import cors from "cors";
 import express from "express";
-import path from "path";
 import apiRoutes from "./routes/appRoutes.js";
+import { uploadsRoot } from "./services/uploadService.js";
 
 const app = express();
 const allowedFrontendOrigin = process.env.FRONTEND_URL;
@@ -24,7 +24,7 @@ app.get("/", (_req, res) => {
   });
 });
 
-app.use("/uploads", express.static(path.resolve("uploads")));
+app.use("/uploads", express.static(uploadsRoot));
 app.use("/api", apiRoutes);
 
 export default app;

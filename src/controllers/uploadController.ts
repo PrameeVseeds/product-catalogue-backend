@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
-import {deleteUploadedImage,toPublicUploadPath,UploadValidationError,} from "../services/uploadService.js";
+import fs from "fs";
+import {deleteUploadedImage,hasPdfSignature,toPublicUploadPath,UploadValidationError,} from "../services/uploadService.js";
 import {sendNotFound,sendSuccess,sendUnexpectedError,} from "../utils/controllerUtils.js";
 import { sendBadRequest } from "../utils/responseHelper.js";
 
@@ -25,18 +26,38 @@ export const uploadImages = (req: Request, res: Response): void => {
   });
 };
 
-export const uploadDatasheet = (req: Request, res: Response): void => {
+export const uploadDatasheet = async (req: Request, res: Response): Promise<void> => {
   if (!req.file) {
     sendBadRequest(res, "Datasheet PDF is required.");
     return;
   }
 
+  try {
+    if (!(await hasPdfSignature(req.file.path))) {
+      await fs.promises.unlink(req.file.path).catch(() => undefined);
+      res.status(415).json({
+        success: false,
+        message: "Only valid PDF datasheets are supported.",
+      });
+      return;
+    }
+  } catch (error) {
+    console.error("Datasheet storage validation failed:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to store datasheet PDF.",
+    });
+    return;
+  }
+
+  console.log("Datasheet file stored.");
   sendSuccess(
     res,
     201,
     "Datasheet uploaded successfully.",
     toPublicUploadPath(req.file),
   );
+  console.log("Datasheet response sent.");
 };
 
 export const deleteImage = async (req: Request,res: Response): Promise<void> => {

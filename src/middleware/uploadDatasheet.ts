@@ -3,12 +3,13 @@ import type { Request } from "express";
 import multer from "multer";
 import {createSafeDatasheetFilename,datasheetsUploadDirectory,isAllowedDatasheetFile,UploadValidationError,} from "../services/uploadService.js";
 
-export const MAX_DATASHEET_SIZE_IN_BYTES = 25 * 1024 * 1024;
+export const MAX_DATASHEET_SIZE_IN_BYTES = 10 * 1024 * 1024;
 
 const storage = multer.diskStorage({
   destination: (_req, _file, callback) => {
-    fs.mkdirSync(datasheetsUploadDirectory, { recursive: true });
-    callback(null, datasheetsUploadDirectory);
+    fs.mkdir(datasheetsUploadDirectory, { recursive: true }, (error) => {
+      callback(error, datasheetsUploadDirectory);
+    });
   },
   filename: (_req, _file, callback) => {
     callback(null, createSafeDatasheetFilename());
@@ -24,6 +25,7 @@ const fileFilter = (
     callback(new UploadValidationError("Only PDF datasheets are supported."));
     return;
   }
+  console.log("Datasheet validation completed.");
   callback(null, true);
 };
 
@@ -38,7 +40,7 @@ export const uploadSingleDatasheet = datasheetUploader.single("datasheet");
 export const getDatasheetUploadErrorMessage = (error: unknown): string | null => {
   if (error instanceof UploadValidationError) return error.message;
   if (error instanceof multer.MulterError) {
-    if (error.code === "LIMIT_FILE_SIZE") return "Datasheet PDF must not exceed 25 MB.";
+    if (error.code === "LIMIT_FILE_SIZE") return "Datasheet PDF must be 10 MB or smaller.";
     if (error.code === "LIMIT_UNEXPECTED_FILE") return "Invalid datasheet upload field.";
   }
   return null;

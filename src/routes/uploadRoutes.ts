@@ -5,6 +5,7 @@ import {getUploadErrorMessage,uploadMultipleImages,uploadSingleImage,} from "../
 import { sendBadRequest } from "../utils/responseHelper.js";
 import {getDatasheetUploadErrorMessage,uploadSingleDatasheet,} from "../middleware/uploadDatasheet.js";
 import { MAX_DATASHEET_SIZE_IN_BYTES } from "../middleware/uploadDatasheet.js";
+import { UploadValidationError } from "../services/uploadService.js";
 
 const router = Router();
 const MAX_MULTIPART_OVERHEAD_IN_BYTES = 64 * 1024;
@@ -44,7 +45,18 @@ router.post(
 router.delete("/admin/uploads/image", authenticate, deleteImage);
 router.post(
   "/admin/uploads/datasheet",
+  (req, _res, next) => {
+    console.log("Datasheet upload request started.");
+    req.once("aborted", () => {
+      console.warn("Datasheet upload request aborted by client.");
+    });
+    next();
+  },
   authenticate,
+  (_req, _res, next) => {
+    console.log("Datasheet authentication completed.");
+    next();
+  },
   (req, res, next) => {
     const contentLength = Number(req.headers["content-length"]);
 
@@ -56,7 +68,7 @@ router.post(
     ) {
       res.status(413).json({
         success: false,
-        message: "Datasheet PDF must not exceed 25 MB.",
+        message: "Datasheet PDF must be 10 MB or smaller.",
       });
       return;
     }
@@ -66,15 +78,26 @@ router.post(
   (req, res, next) => {
     uploadSingleDatasheet(req, res, (error: unknown) => {
       if (!error) {
+        console.log("Datasheet file received.");
         next();
         return;
       }
       const message = getDatasheetUploadErrorMessage(error);
       if (message) {
-        sendBadRequest(res, message);
+        const statusCode =
+          error instanceof Error && "code" in error && error.code === "LIMIT_FILE_SIZE"
+            ? 413
+            : error instanceof UploadValidationError
+              ? 415
+              : 400;
+        res.status(statusCode).json({ success: false, message });
         return;
       }
-      next(error);
+      console.error("Datasheet upload storage failed:", error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to store datasheet PDF.",
+      });
     });
   },
   uploadDatasheet,

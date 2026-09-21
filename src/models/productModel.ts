@@ -12,6 +12,7 @@ export interface ProductRow extends RowDataPacket {
   datasheet_title: string | null;
   datasheet_description: string | null;
   datasheet_file_url: string | null;
+  specification_file_url: string | null;
   meta_title: string | null;
   meta_description: string | null;
   is_featured: boolean;

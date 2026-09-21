@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "seed:first-admin": "tsx src/seeders/createFirstAdmin.ts",
+    "migrate:specification-pdf": "node database/applySpecificationPdfMigration.mjs",
     "typecheck": "tsc --noEmit",
     "build": "tsc",
     "start": "node dist/server.js"
@@ -22,6 +23,7 @@
     "multer": "^2.2.0",
     "mysql2": "^3.23.2",
     "nodemailer": "^9.0.4",
+    "pdf-parse": "^2.4.5",
     "pdfkit": "^0.19.1"
   },
   "devDependencies": {

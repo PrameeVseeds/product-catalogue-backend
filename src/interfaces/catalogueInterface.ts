@@ -49,6 +49,7 @@ export interface ProductInput {
   datasheetTitle: string | null;
   datasheetDescription: string | null;
   datasheetFileUrl: string | null;
+  specificationFileUrl: string | null;
   metaTitle: string | null;
   metaDescription: string | null;
   isFeatured: boolean;

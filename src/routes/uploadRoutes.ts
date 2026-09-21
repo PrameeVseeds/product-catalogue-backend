@@ -1,9 +1,10 @@
 import { Router } from "express";
-import {deleteImage,uploadDatasheet,uploadImage,uploadImages,} from "../controllers/uploadController.js";
+import {deleteImage,uploadDatasheet,uploadImage,uploadImages,uploadSpecificationPdf,} from "../controllers/uploadController.js";
 import { authenticate } from "../middleware/authenticate.js";
 import {getUploadErrorMessage,uploadMultipleImages,uploadSingleImage,} from "../middleware/uploadImage.js";
 import { sendBadRequest } from "../utils/responseHelper.js";
 import {getDatasheetUploadErrorMessage,uploadSingleDatasheet,} from "../middleware/uploadDatasheet.js";
+import { uploadSingleSpecificationPdf } from "../middleware/uploadDatasheet.js";
 import { MAX_DATASHEET_SIZE_IN_BYTES } from "../middleware/uploadDatasheet.js";
 import { UploadValidationError } from "../services/uploadService.js";
 
@@ -101,6 +102,21 @@ router.post(
     });
   },
   uploadDatasheet,
+);
+
+router.post(
+  "/admin/uploads/specification-pdf",
+  authenticate,
+  (req, res, next) => {
+    uploadSingleSpecificationPdf(req, res, (error: unknown) => {
+      if (!error) 
+        return next();
+      const message = getDatasheetUploadErrorMessage(error);
+      res.status(error instanceof Error && "code" in error && error.code === "LIMIT_FILE_SIZE" ? 413 : 400)
+        .json({ success: false, message: message ?? "Failed to upload specification PDF." });
+    });
+  },
+  uploadSpecificationPdf,
 );
 
 export default router;

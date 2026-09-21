@@ -195,6 +195,7 @@ export const validateProduct = (
   if (!name.isValid) return name;
   if (!slug.isValid) return slug;
   const datasheetFileUrl = getNullableString(body.datasheetFileUrl);
+  const specificationFileUrl = getNullableString(body.specificationFileUrl);
   if (
     datasheetFileUrl &&
     !/^\/uploads\/datasheets\/[a-zA-Z0-9-]+\.pdf$/.test(datasheetFileUrl)
@@ -203,6 +204,12 @@ export const validateProduct = (
       isValid: false,
       message: "Datasheet file path is invalid.",
     };
+  }
+  if (
+    specificationFileUrl &&
+    !/^\/uploads\/specification-pdfs\/[a-zA-Z0-9-]+\.pdf$/.test(specificationFileUrl)
+  ) {
+    return { isValid: false, message: "Specification PDF file path is invalid." };
   }
 
   return {
@@ -218,6 +225,7 @@ export const validateProduct = (
       datasheetTitle: getNullableString(body.datasheetTitle),
       datasheetDescription: getNullableString(body.datasheetDescription),
       datasheetFileUrl,
+      specificationFileUrl,
       metaTitle: getNullableString(body.metaTitle),
       metaDescription: getNullableString(body.metaDescription),
       isFeatured: getBoolean(body.isFeatured, false),

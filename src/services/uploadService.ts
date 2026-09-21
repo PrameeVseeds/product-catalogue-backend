@@ -22,6 +22,7 @@ const allowedExtensionsByMimeType: Record<string, string[]> = {
 
 export const uploadsRoot = path.resolve(process.env.UPLOAD_ROOT || "uploads");
 export const datasheetsUploadDirectory = path.join(uploadsRoot, "datasheets");
+export const specificationPdfsUploadDirectory = path.join(uploadsRoot, "specification-pdfs");
 
 export class UploadValidationError extends Error {}
 
@@ -118,6 +119,16 @@ export const resolveDatasheetUploadPath = (publicPath: string): string | null =>
   return resolvedPath.startsWith(`${datasheetsUploadDirectory}${path.sep}`)
     ? resolvedPath
     : null;
+};
+
+export const resolveSpecificationPdfUploadPath = (publicPath: string): string | null => {
+  if (!publicPath.startsWith("/uploads/specification-pdfs/")) 
+    return null;
+  const filename = publicPath.slice("/uploads/specification-pdfs/".length);
+  if (!filename || filename !== path.basename(filename) || path.extname(filename).toLowerCase() !== ".pdf") 
+    return null;
+  const resolvedPath = path.resolve(specificationPdfsUploadDirectory, filename);
+  return resolvedPath.startsWith(`${specificationPdfsUploadDirectory}${path.sep}`) ? resolvedPath : null;
 };
 
 export const deleteUploadedImage = async (publicPath: string): Promise<boolean> => {

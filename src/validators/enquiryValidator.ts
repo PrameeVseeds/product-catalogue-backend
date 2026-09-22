@@ -16,6 +16,7 @@ const maxLengths = {
   name: 150,
   email: 150,
   phone: 50,
+  modelNumber: 255,
   subject: 255,
   message: 5000,
 };
@@ -81,9 +82,15 @@ export const validateCreateEnquiry = (body: Record<string, unknown>): Validation
     "Subject",
     maxLengths.subject
   );
+  const modelNumber = validateLength(
+    getNullableString(body.modelNumber),
+    "Model number",
+    maxLengths.modelNumber,
+  );
 
   if (!phone.isValid) return phone;
   if (!subject.isValid) return subject;
+  if (!modelNumber.isValid) return modelNumber;
 
   const lengths = [
     validateLength(name.data, "Name", maxLengths.name),
@@ -99,6 +106,7 @@ export const validateCreateEnquiry = (body: Record<string, unknown>): Validation
     isValid: true,
     data: {
       productId: productId ? productId.data : null,
+      modelNumber: modelNumber.data,
       name: name.data,
       email: email.data.toLowerCase(),
       phone: phone.data,

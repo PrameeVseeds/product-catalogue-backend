@@ -2,6 +2,7 @@ import type { EnquiryStatus, EnquiryType } from "../models/enquiryModel.js";
 
 export interface CreateEnquiryInput {
   productId: number | null;
+  modelNumber: string | null;
   name: string;
   email: string;
   phone: string | null;

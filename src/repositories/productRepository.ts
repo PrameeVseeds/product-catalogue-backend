@@ -47,9 +47,9 @@ export const findProducts = async (filters: ProductListFilters,activeOnly: boole
   const { whereSql, values } = buildProductFilterSql(filters, activeOnly);
   const sql = `SELECT p.*
      FROM products p
-     INNER JOIN subcategories s ON s.id = p.subcategory_id
+     LEFT JOIN subcategories s ON s.id = p.subcategory_id
      LEFT JOIN category_brands cb ON cb.id = s.category_brand_id
-     INNER JOIN categories c ON c.id = s.category_id
+     LEFT JOIN categories c ON c.id = s.category_id
      LEFT JOIN brands b ON b.id = cb.brand_id
      ${whereSql}
      ORDER BY p.display_order ASC, p.created_at DESC`;

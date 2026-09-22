@@ -184,14 +184,18 @@ export const validateSubcategory = (
 export const validateProduct = (
   body: Record<string, unknown>,
 ): ValidationResult<ProductInput> => {
-  const subcategoryId = validateId(
-    body.subcategoryId?.toString(),
-    "Subcategory ID",
-  );
+  const subcategoryValue = body.subcategoryId;
+  const subcategoryId =
+    subcategoryValue === undefined ||
+    subcategoryValue === null ||
+    subcategoryValue === "" ||
+    subcategoryValue === 0
+      ? null
+      : validateId(subcategoryValue.toString(), "Subcategory ID");
   const name = getRequiredString(body, "name", "Name");
   const slug = validateSlug(body);
 
-  if (!subcategoryId.isValid) return subcategoryId;
+  if (subcategoryId && !subcategoryId.isValid) return subcategoryId;
   if (!name.isValid) return name;
   if (!slug.isValid) return slug;
   const datasheetFileUrl = getNullableString(body.datasheetFileUrl);
@@ -215,7 +219,7 @@ export const validateProduct = (
   return {
     isValid: true,
     data: {
-      subcategoryId: subcategoryId.data,
+      subcategoryId: subcategoryId ? subcategoryId.data : null,
       name: name.data,
       slug: slug.data,
       modelNumber: getNullableString(body.modelNumber),

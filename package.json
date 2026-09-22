@@ -9,12 +9,14 @@
     "dev": "tsx watch src/server.ts",
     "seed:first-admin": "tsx src/seeders/createFirstAdmin.ts",
     "migrate:specification-pdf": "node database/applySpecificationPdfMigration.mjs",
+    "migrate:enquiry-model": "node database/applyEnquiryModelMigration.mjs",
     "typecheck": "tsc --noEmit",
     "build": "tsc",
     "start": "node dist/server.js"
   },
   "license": "UNLICENSED",
   "dependencies": {
+    "@napi-rs/canvas": "^0.1.80",
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",

@@ -7,11 +7,19 @@ import * as settingsService from "./singletonSettingsService.js";
 
 const enquiryNotFoundError = "ENQUIRY_NOT_FOUND";
 const productNotFoundError = "PRODUCT_NOT_FOUND";
+const productModelNotFoundError = "PRODUCT_MODEL_NOT_FOUND";
 
 export const enquiryErrors = {
   enquiryNotFound: enquiryNotFoundError,
   productNotFound: productNotFoundError,
+  productModelNotFound: productModelNotFoundError,
 } as const;
+
+const getProductModels = (modelNumber: string | null): string[] =>
+  (modelNumber ?? "")
+    .split(/\r?\n|,/)
+    .map((model) => model.trim())
+    .filter(Boolean);
 
 export const createEnquiry = async (input: CreateEnquiryInput) => {
   let product: ProductRow | null = null;
@@ -22,6 +30,17 @@ export const createEnquiry = async (input: CreateEnquiryInput) => {
     if (!product) {
       throw new Error(productNotFoundError);
     }
+
+    if (
+      input.modelNumber &&
+      !getProductModels(product.model_number).includes(input.modelNumber)
+    ) {
+      throw new Error(productModelNotFoundError);
+    }
+  }
+
+  if (input.modelNumber && !product) {
+    throw new Error(productModelNotFoundError);
   }
 
   const enquiry = await enquiryRepository.createEnquiry({

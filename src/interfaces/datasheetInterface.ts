@@ -11,7 +11,7 @@ export interface DatasheetSummary {
 
 export interface DatasheetProduct {
   id: number;
-  subcategoryId: number;
+  subcategoryId: number | null;
   name: string;
   slug: string;
   modelNumber: string | null;
@@ -59,6 +59,8 @@ export interface DatasheetProduct {
 
 export interface DatasheetData {
   product: DatasheetProduct;
+  /** The requested model, if the visitor explicitly chose one. */
+  selectedModel: string | null;
   siteSettings: SiteSettingsRow;
   contactSettings: ContactSettingsRow;
   generatedAt: Date;

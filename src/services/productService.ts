@@ -53,7 +53,10 @@ export const getProductDetailBySlug = async (slug: string) => {
           slug: relations.brand_slug,
         }
       : null,
-    subcategory: relations
+    subcategory:
+      relations?.subcategory_id &&
+      relations.subcategory_name &&
+      relations.subcategory_slug
       ? {
           id: relations.subcategory_id,
           name: relations.subcategory_name,
@@ -66,7 +69,11 @@ export const getProductDetailBySlug = async (slug: string) => {
   };
 };
 
-const validateSubcategory = async (subcategoryId: number): Promise<void> => {
+const validateSubcategory = async (
+  subcategoryId: number | null,
+): Promise<void> => {
+  if (subcategoryId === null) return;
+
   const subcategory = await subcategoryRepository.findSubcategoryById(
     subcategoryId
   );

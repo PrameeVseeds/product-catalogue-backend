@@ -6,6 +6,7 @@ export type EnquiryStatus = "NEW" | "IN_PROGRESS" | "CONTACTED" | "CLOSED";
 export interface EnquiryRow extends RowDataPacket {
   id: number;
   product_id: number | null;
+  model_number: string | null;
   enquiry_type: EnquiryType;
   name: string;
   email: string;
@@ -20,5 +21,4 @@ export interface EnquiryRow extends RowDataPacket {
 export interface EnquiryDetailRow extends EnquiryRow {
   product_name: string | null;
   product_slug: string | null;
-  model_number: string | null;
 }

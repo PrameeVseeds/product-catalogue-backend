@@ -32,10 +32,11 @@ const buildFilterSql = (filters: EnquiryListFilters): { whereSql: string; values
 export const createEnquiry = async (input: EnquiryCreateRecordInput): Promise<EnquiryRow | null> => {
   const [result] = await pool.execute<ResultSetHeader>(
     `INSERT INTO enquiries
-       (product_id, enquiry_type, name, email, phone, subject, message, status)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+       (product_id, model_number, enquiry_type, name, email, phone, subject, message, status)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       input.productId,
+      input.modelNumber,
       input.enquiryType,
       input.name,
       input.email,

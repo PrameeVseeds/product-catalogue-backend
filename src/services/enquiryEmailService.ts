@@ -29,7 +29,7 @@ export const sendEnquiryNotificationEmail = async (
     "",
     line("Enquiry ID", enquiry.id),
     product ? line("Product", product.name) : null,
-    product ? line("Model number", product.model_number) : null,
+    line("Model number", enquiry.model_number || product?.model_number || null),
     line("Customer name", enquiry.name),
     line("Customer email", enquiry.email),
     line("Customer phone", enquiry.phone),

@@ -2,6 +2,8 @@ import type { RowDataPacket } from "mysql2";
 
 export interface ProductRow extends RowDataPacket {
   id: number;
+  category_id: number | null;
+  brand_id: number | null;
   subcategory_id: number | null;
   name: string;
   slug: string;

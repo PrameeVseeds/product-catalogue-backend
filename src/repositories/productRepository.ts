@@ -18,12 +18,12 @@ const buildProductFilterSql = (filters: ProductListFilters,activeOnly: boolean):
   }
 
   if (filters.category) {
-    conditions.push("c.slug = ?");
+    conditions.push("COALESCE(direct_category.slug, subcategory_category.slug) = ?");
     values.push(filters.category);
   }
 
   if (filters.brand) {
-    conditions.push("b.slug = ?");
+    conditions.push("COALESCE(direct_brand.slug, subcategory_brand.slug) = ?");
     values.push(filters.brand);
   }
 
@@ -49,8 +49,10 @@ export const findProducts = async (filters: ProductListFilters,activeOnly: boole
      FROM products p
      LEFT JOIN subcategories s ON s.id = p.subcategory_id
      LEFT JOIN category_brands cb ON cb.id = s.category_brand_id
-     LEFT JOIN categories c ON c.id = s.category_id
-     LEFT JOIN brands b ON b.id = cb.brand_id
+     LEFT JOIN categories subcategory_category ON subcategory_category.id = s.category_id
+     LEFT JOIN brands subcategory_brand ON subcategory_brand.id = cb.brand_id
+     LEFT JOIN categories direct_category ON direct_category.id = p.category_id
+     LEFT JOIN brands direct_brand ON direct_brand.id = p.brand_id
      ${whereSql}
      ORDER BY p.display_order ASC, p.created_at DESC`;
   const [rows] = await pool.execute({ sql }, values);
@@ -86,20 +88,22 @@ export const findProductBySlug = async (slug: string,activeOnly: boolean): Promi
 export const findProductRelations = async (productId: number): Promise<ProductRelationSummaryRow | null> => {
   const [rows] = await pool.execute<ProductRelationSummaryRow[]>(
     `SELECT
-       c.id AS category_id,
-       c.name AS category_name,
-       c.slug AS category_slug,
-       b.id AS brand_id,
-       b.name AS brand_name,
-       b.slug AS brand_slug,
+       COALESCE(p.category_id, s.category_id) AS category_id,
+       COALESCE(direct_category.name, subcategory_category.name) AS category_name,
+       COALESCE(direct_category.slug, subcategory_category.slug) AS category_slug,
+       COALESCE(p.brand_id, subcategory_brand.id) AS brand_id,
+       COALESCE(direct_brand.name, subcategory_brand.name) AS brand_name,
+       COALESCE(direct_brand.slug, subcategory_brand.slug) AS brand_slug,
        s.id AS subcategory_id,
        s.name AS subcategory_name,
        s.slug AS subcategory_slug
      FROM products p
-     INNER JOIN subcategories s ON s.id = p.subcategory_id
+     LEFT JOIN subcategories s ON s.id = p.subcategory_id
      LEFT JOIN category_brands cb ON cb.id = s.category_brand_id
-     INNER JOIN categories c ON c.id = s.category_id
-     LEFT JOIN brands b ON b.id = cb.brand_id
+     LEFT JOIN categories subcategory_category ON subcategory_category.id = s.category_id
+     LEFT JOIN brands subcategory_brand ON subcategory_brand.id = cb.brand_id
+     LEFT JOIN categories direct_category ON direct_category.id = p.category_id
+     LEFT JOIN brands direct_brand ON direct_brand.id = p.brand_id
      WHERE p.id = ?
      LIMIT 1`,
     [productId]
@@ -111,11 +115,13 @@ export const findProductRelations = async (productId: number): Promise<ProductRe
 export const createProduct = async (input: ProductInput): Promise<ProductRow | null> => {
   const [result] = await pool.execute<ResultSetHeader>(
     `INSERT INTO products
-       (subcategory_id, name, slug, model_number, short_description,
+       (category_id, brand_id, subcategory_id, name, slug, model_number, short_description,
         description, main_image_url, datasheet_title, datasheet_description,
         datasheet_file_url, specification_file_url, meta_title, meta_description, is_featured, is_active, display_order)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
+      input.categoryId,
+      input.brandId,
       input.subcategoryId,
       input.name,
       input.slug,
@@ -141,7 +147,9 @@ export const createProduct = async (input: ProductInput): Promise<ProductRow | n
 export const updateProduct = async (productId: number,input: ProductInput): Promise<boolean> => {
   const [result] = await pool.execute<ResultSetHeader>(
     `UPDATE products
-     SET subcategory_id = ?,
+     SET category_id = ?,
+         brand_id = ?,
+         subcategory_id = ?,
          name = ?,
          slug = ?,
          model_number = ?,
@@ -159,6 +167,8 @@ export const updateProduct = async (productId: number,input: ProductInput): Prom
          display_order = ?
      WHERE id = ?`,
     [
+      input.categoryId,
+      input.brandId,
       input.subcategoryId,
       input.name,
       input.slug,

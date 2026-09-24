@@ -184,6 +184,12 @@ export const validateSubcategory = (
 export const validateProduct = (
   body: Record<string, unknown>,
 ): ValidationResult<ProductInput> => {
+  const optionalId = (value: unknown, label: string) =>
+    value === undefined || value === null || value === "" || value === 0
+      ? null
+      : validateId(value.toString(), label);
+  const categoryId = optionalId(body.categoryId, "Category ID");
+  const brandId = optionalId(body.brandId, "Brand ID");
   const subcategoryValue = body.subcategoryId;
   const subcategoryId =
     subcategoryValue === undefined ||
@@ -195,6 +201,8 @@ export const validateProduct = (
   const name = getRequiredString(body, "name", "Name");
   const slug = validateSlug(body);
 
+  if (categoryId && !categoryId.isValid) return categoryId;
+  if (brandId && !brandId.isValid) return brandId;
   if (subcategoryId && !subcategoryId.isValid) return subcategoryId;
   if (!name.isValid) return name;
   if (!slug.isValid) return slug;
@@ -219,6 +227,8 @@ export const validateProduct = (
   return {
     isValid: true,
     data: {
+      categoryId: categoryId ? categoryId.data : null,
+      brandId: brandId ? brandId.data : null,
       subcategoryId: subcategoryId ? subcategoryId.data : null,
       name: name.data,
       slug: slug.data,

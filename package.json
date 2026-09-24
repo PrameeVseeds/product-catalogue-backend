@@ -10,6 +10,8 @@
     "seed:first-admin": "tsx src/seeders/createFirstAdmin.ts",
     "migrate:specification-pdf": "node database/applySpecificationPdfMigration.mjs",
     "migrate:enquiry-model": "node database/applyEnquiryModelMigration.mjs",
+    "migrate:product-models": "node database/applyProductModelsMigration.mjs",
+    "migrate:product-placement": "node database/applyProductPlacementMigration.mjs",
     "typecheck": "tsc --noEmit",
     "build": "tsc",
     "start": "node dist/server.js"

@@ -268,23 +268,23 @@ export const createProductDatasheetPdf = async (
   }
 
   if (!hasSelectedModel && models.length) {
-    drawSectionTitle("Key Features");
+    drawSectionTitle("Models");
     const modelColumnCount = 4;
     const modelColumnWidth = contentWidth / modelColumnCount;
     const headerHeight = 25;
     const drawModelsTableHeader = (continued = false) => {
-      if (continued) drawSectionTitle("Key Features (continued)");
+      if (continued) drawSectionTitle("Models (continued)");
       ensureSpace(headerHeight);
       doc.rect(layout.left, currentY, contentWidth, headerHeight).fill(colors.surface);
       doc
-        .font("Helvetica-Bold")
-        .fontSize(9)
-        .fillColor(colors.text)
-        .text("Models", layout.left + 8, currentY + 7, {
-          width: modelColumnWidth - 16,
-          lineBreak: false,
-        });
-      currentY += headerHeight;
+        .font("Helvetica-Bold");
+      //   .fontSize(9)
+      //   .fillColor(colors.text)
+      //   .text("Models", layout.left + 8, currentY + 7, {
+      //     width: modelColumnWidth - 16,
+      //     lineBreak: false,
+      //   });
+      // currentY += headerHeight;
     };
     drawModelsTableHeader();
     for (let start = 0; start < models.length; start += modelColumnCount) {

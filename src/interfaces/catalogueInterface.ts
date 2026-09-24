@@ -39,6 +39,8 @@ export interface SubcategoryInput {
 }
 
 export interface ProductInput {
+  categoryId: number | null;
+  brandId: number | null;
   subcategoryId: number | null;
   name: string;
   slug: string;

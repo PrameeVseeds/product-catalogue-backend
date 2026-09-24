@@ -5,6 +5,8 @@ import * as productFeatureRepository from "../repositories/productFeatureReposit
 import * as productImageRepository from "../repositories/productImageRepository.js";
 import * as productSpecificationRepository from "../repositories/productSpecificationRepository.js";
 import * as subcategoryRepository from "../repositories/subcategoryRepository.js";
+import * as categoryRepository from "../repositories/categoryRepository.js";
+import * as brandRepository from "../repositories/brandRepository.js";
 import {mapProduct,mapProductFeature,mapProductImage,mapProductSpecification,} from "../utils/catalogueMapper.js";
 import { normalizeSlug } from "../utils/slugUtils.js";
 import { catalogueErrors } from "./catalogueErrors.js";
@@ -83,8 +85,25 @@ const validateSubcategory = async (
   }
 };
 
+const validateDirectPlacement = async (input: ProductInput): Promise<void> => {
+  const [category, brand] = await Promise.all([
+    input.categoryId === null
+      ? null
+      : categoryRepository.findCategoryById(input.categoryId),
+    input.brandId === null ? null : brandRepository.findBrandById(input.brandId),
+  ]);
+
+  if (input.categoryId !== null && !category) {
+    throw new Error(catalogueErrors.categoryNotFound);
+  }
+  if (input.brandId !== null && !brand) {
+    throw new Error(catalogueErrors.brandNotFound);
+  }
+};
+
 export const createProduct = async (input: ProductInput) => {
   await validateSubcategory(input.subcategoryId);
+  await validateDirectPlacement(input);
 
   try {
     return await productRepository.createProduct(input);
@@ -99,6 +118,7 @@ export const createProduct = async (input: ProductInput) => {
 
 export const updateProduct = async (productId: number,input: ProductInput) => {
   await validateSubcategory(input.subcategoryId);
+  await validateDirectPlacement(input);
 
   try {
     const updated = await productRepository.updateProduct(productId, input);

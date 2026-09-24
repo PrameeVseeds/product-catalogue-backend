@@ -112,3 +112,12 @@ export const countCategoryBrandsByCategory = async (categoryId: number): Promise
 
   return rows[0]?.count ?? 0;
 };
+
+export const countProductsByCategory = async (categoryId: number): Promise<number> => {
+  const [rows] = await pool.execute<CountRow[]>(
+    `SELECT COUNT(*) AS count FROM products WHERE category_id = ?`,
+    [categoryId],
+  );
+
+  return rows[0]?.count ?? 0;
+};

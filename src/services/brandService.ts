@@ -49,11 +49,12 @@ export const updateBrand = async (brandId: number, input: BrandInput) => {
 };
 
 export const deleteBrand = async (brandId: number): Promise<boolean> => {
-  const relationCount = await brandRepository.countCategoryBrandsByBrand(
-    brandId
-  );
+  const [relationCount, productCount] = await Promise.all([
+    brandRepository.countCategoryBrandsByBrand(brandId),
+    brandRepository.countProductsByBrand(brandId),
+  ]);
 
-  if (relationCount > 0) {
+  if (relationCount > 0 || productCount > 0) {
     throw new Error(catalogueErrors.brandHasRelations);
   }
 

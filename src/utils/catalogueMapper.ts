@@ -5,6 +5,8 @@ import type { ProductSpecificationRow } from "../models/productSpecificationMode
 
 export const mapProduct = (product: ProductRow) => ({
   id: product.id,
+  categoryId: product.category_id,
+  brandId: product.brand_id,
   subcategoryId: product.subcategory_id,
   name: product.name,
   slug: product.slug,

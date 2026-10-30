@@ -12,6 +12,8 @@ const getSafeDatasheetFilename = (slug: string): string => {
 
 export const getProductDatasheet = async (req: Request,res: Response): Promise<void> => {
   const slug = normalizeSlug(String(req.params.slug));
+  const selectedModel =
+    typeof req.query.model === "string" ? req.query.model.trim() : "";
 
   if (!slug) {
     sendBadRequest(res, "Product slug is invalid.");
@@ -19,7 +21,7 @@ export const getProductDatasheet = async (req: Request,res: Response): Promise<v
   }
 
   try {
-    const datasheetData = await getProductDatasheetData(slug);
+    const datasheetData = await getProductDatasheetData(slug, selectedModel || undefined);
 
     if (!datasheetData) {
       res.status(404).json({
@@ -30,7 +32,7 @@ export const getProductDatasheet = async (req: Request,res: Response): Promise<v
     }
 
     const storedPath = datasheetData.product.datasheetFileUrl;
-    if (storedPath) {
+    if (storedPath && !selectedModel) {
       const uploadedPath = resolveDatasheetUploadPath(storedPath);
       if (uploadedPath) {
         try {
@@ -54,7 +56,7 @@ export const getProductDatasheet = async (req: Request,res: Response): Promise<v
       }
     }
 
-    const document = createProductDatasheetPdf(datasheetData);
+    const document = await createProductDatasheetPdf(datasheetData);
 
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader(
@@ -76,6 +78,10 @@ export const getProductDatasheet = async (req: Request,res: Response): Promise<v
     document.pipe(res);
     document.end();
   } catch (error) {
+    if (error instanceof Error && error.message === "PRODUCT_MODEL_NOT_FOUND") {
+      sendBadRequest(res, "Model is invalid for this product.");
+      return;
+    }
     console.error("Failed to generate product datasheet:", error);
 
     if (!res.headersSent) {

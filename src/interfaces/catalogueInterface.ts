@@ -39,7 +39,9 @@ export interface SubcategoryInput {
 }
 
 export interface ProductInput {
-  subcategoryId: number;
+  categoryId: number | null;
+  brandId: number | null;
+  subcategoryId: number | null;
   name: string;
   slug: string;
   modelNumber: string | null;
@@ -49,6 +51,7 @@ export interface ProductInput {
   datasheetTitle: string | null;
   datasheetDescription: string | null;
   datasheetFileUrl: string | null;
+  specificationFileUrl: string | null;
   metaTitle: string | null;
   metaDescription: string | null;
   isFeatured: boolean;

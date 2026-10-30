@@ -187,6 +187,7 @@ DROP TABLE IF EXISTS `enquiries`;
 CREATE TABLE `enquiries` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `product_id` bigint unsigned DEFAULT NULL,
+  `model_number` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `enquiry_type` enum('GENERAL','PRODUCT') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'GENERAL',
   `name` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
   `email` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -210,7 +211,7 @@ CREATE TABLE `enquiries` (
 
 LOCK TABLES `enquiries` WRITE;
 /*!40000 ALTER TABLE `enquiries` DISABLE KEYS */;
-INSERT INTO `enquiries` VALUES (1,NULL,'GENERAL','Test customer','dithmiprameesha@gmail.com','0741477269','Test subject','test message','NEW','2026-08-10 09:37:05','2026-08-10 09:37:05');
+INSERT INTO `enquiries` VALUES (1,NULL,NULL,'GENERAL','Test customer','dithmiprameesha@gmail.com','0741477269','Test subject','test message','NEW','2026-08-10 09:37:05','2026-08-10 09:37:05');
 /*!40000 ALTER TABLE `enquiries` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -454,16 +455,19 @@ DROP TABLE IF EXISTS `products`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `products` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `subcategory_id` bigint unsigned NOT NULL,
+  `category_id` bigint unsigned DEFAULT NULL,
+  `brand_id` bigint unsigned DEFAULT NULL,
+  `subcategory_id` bigint unsigned DEFAULT NULL,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `slug` varchar(280) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `model_number` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `model_number` longtext COLLATE utf8mb4_unicode_ci,
   `short_description` text COLLATE utf8mb4_unicode_ci,
   `description` longtext COLLATE utf8mb4_unicode_ci,
   `main_image_url` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `datasheet_title` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `datasheet_description` text COLLATE utf8mb4_unicode_ci,
   `datasheet_file_url` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `specification_file_url` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `meta_title` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `meta_description` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `is_featured` tinyint(1) NOT NULL DEFAULT '0',
@@ -473,8 +477,12 @@ CREATE TABLE `products` (
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_product_slug` (`slug`),
+  KEY `idx_product_category` (`category_id`),
+  KEY `idx_product_brand` (`brand_id`),
   KEY `idx_product_subcategory` (`subcategory_id`),
   KEY `idx_product_featured_active` (`is_featured`,`is_active`),
+  CONSTRAINT `fk_product_category` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE RESTRICT,
+  CONSTRAINT `fk_product_brand` FOREIGN KEY (`brand_id`) REFERENCES `brands` (`id`) ON DELETE RESTRICT,
   CONSTRAINT `fk_product_subcategory` FOREIGN KEY (`subcategory_id`) REFERENCES `subcategories` (`id`) ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;

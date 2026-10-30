@@ -4,6 +4,7 @@ import {createProductFeature,createProductImage,createProductSpecification,
   deleteProductFeature,deleteProductImage,deleteProductSpecification,updateProductFeature,
   updateProductImage,updateProductSpecification,} from "../controllers/productAssetController.js";
 import { authenticate } from "../middleware/authenticate.js";
+import { extractProductSpecifications } from "../controllers/productSpecificationExtractionController.js";
 
 const router = Router();
 
@@ -13,6 +14,7 @@ router.get("/admin/products", authenticate, getAllProducts);
 router.post("/admin/products", authenticate, createProduct);
 router.put("/admin/products/:id", authenticate, updateProduct);
 router.delete("/admin/products/:id", authenticate, deleteProduct);
+router.post("/admin/products/extract-specifications", authenticate, extractProductSpecifications);
 
 router.post("/admin/product-images", authenticate, createProductImage);
 router.put("/admin/product-images/:id", authenticate, updateProductImage);

@@ -184,17 +184,30 @@ export const validateSubcategory = (
 export const validateProduct = (
   body: Record<string, unknown>,
 ): ValidationResult<ProductInput> => {
-  const subcategoryId = validateId(
-    body.subcategoryId?.toString(),
-    "Subcategory ID",
-  );
+  const optionalId = (value: unknown, label: string) =>
+    value === undefined || value === null || value === "" || value === 0
+      ? null
+      : validateId(value.toString(), label);
+  const categoryId = optionalId(body.categoryId, "Category ID");
+  const brandId = optionalId(body.brandId, "Brand ID");
+  const subcategoryValue = body.subcategoryId;
+  const subcategoryId =
+    subcategoryValue === undefined ||
+    subcategoryValue === null ||
+    subcategoryValue === "" ||
+    subcategoryValue === 0
+      ? null
+      : validateId(subcategoryValue.toString(), "Subcategory ID");
   const name = getRequiredString(body, "name", "Name");
   const slug = validateSlug(body);
 
-  if (!subcategoryId.isValid) return subcategoryId;
+  if (categoryId && !categoryId.isValid) return categoryId;
+  if (brandId && !brandId.isValid) return brandId;
+  if (subcategoryId && !subcategoryId.isValid) return subcategoryId;
   if (!name.isValid) return name;
   if (!slug.isValid) return slug;
   const datasheetFileUrl = getNullableString(body.datasheetFileUrl);
+  const specificationFileUrl = getNullableString(body.specificationFileUrl);
   if (
     datasheetFileUrl &&
     !/^\/uploads\/datasheets\/[a-zA-Z0-9-]+\.pdf$/.test(datasheetFileUrl)
@@ -204,11 +217,19 @@ export const validateProduct = (
       message: "Datasheet file path is invalid.",
     };
   }
+  if (
+    specificationFileUrl &&
+    !/^\/uploads\/specification-pdfs\/[a-zA-Z0-9-]+\.pdf$/.test(specificationFileUrl)
+  ) {
+    return { isValid: false, message: "Specification PDF file path is invalid." };
+  }
 
   return {
     isValid: true,
     data: {
-      subcategoryId: subcategoryId.data,
+      categoryId: categoryId ? categoryId.data : null,
+      brandId: brandId ? brandId.data : null,
+      subcategoryId: subcategoryId ? subcategoryId.data : null,
       name: name.data,
       slug: slug.data,
       modelNumber: getNullableString(body.modelNumber),
@@ -218,6 +239,7 @@ export const validateProduct = (
       datasheetTitle: getNullableString(body.datasheetTitle),
       datasheetDescription: getNullableString(body.datasheetDescription),
       datasheetFileUrl,
+      specificationFileUrl,
       metaTitle: getNullableString(body.metaTitle),
       metaDescription: getNullableString(body.metaDescription),
       isFeatured: getBoolean(body.isFeatured, false),

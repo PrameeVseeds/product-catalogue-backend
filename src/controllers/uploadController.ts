@@ -60,6 +60,8 @@ export const uploadDatasheet = async (req: Request, res: Response): Promise<void
   console.log("Datasheet response sent.");
 };
 
+export const uploadSpecificationPdf = uploadDatasheet;
+
 export const deleteImage = async (req: Request,res: Response): Promise<void> => {
   const publicPath = typeof req.body.path === "string" ? req.body.path.trim() : "";
 

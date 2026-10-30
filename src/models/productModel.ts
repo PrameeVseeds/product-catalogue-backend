@@ -2,7 +2,9 @@ import type { RowDataPacket } from "mysql2";
 
 export interface ProductRow extends RowDataPacket {
   id: number;
-  subcategory_id: number;
+  category_id: number | null;
+  brand_id: number | null;
+  subcategory_id: number | null;
   name: string;
   slug: string;
   model_number: string | null;
@@ -12,6 +14,7 @@ export interface ProductRow extends RowDataPacket {
   datasheet_title: string | null;
   datasheet_description: string | null;
   datasheet_file_url: string | null;
+  specification_file_url: string | null;
   meta_title: string | null;
   meta_description: string | null;
   is_featured: boolean;
@@ -28,7 +31,7 @@ export interface ProductRelationSummaryRow extends RowDataPacket {
   brand_id: number | null;
   brand_name: string | null;
   brand_slug: string | null;
-  subcategory_id: number;
-  subcategory_name: string;
-  subcategory_slug: string;
+  subcategory_id: number | null;
+  subcategory_name: string | null;
+  subcategory_slug: string | null;
 }

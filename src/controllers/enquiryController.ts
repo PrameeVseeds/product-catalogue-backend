@@ -22,6 +22,10 @@ export const createEnquiry = async (req: Request,res: Response): Promise<void> =
       sendBadRequest(res, "Product ID is invalid.");
       return;
     }
+    if (isServiceError(error, enquiryService.enquiryErrors.productModelNotFound)) {
+      sendBadRequest(res, "Model is invalid for this product.");
+      return;
+    }
 
     sendUnexpectedError(res, "Failed to create enquiry:", error);
   }

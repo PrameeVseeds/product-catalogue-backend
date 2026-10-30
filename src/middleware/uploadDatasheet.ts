@@ -2,6 +2,7 @@ import fs from "fs";
 import type { Request } from "express";
 import multer from "multer";
 import {createSafeDatasheetFilename,datasheetsUploadDirectory,isAllowedDatasheetFile,UploadValidationError,} from "../services/uploadService.js";
+import { specificationPdfsUploadDirectory } from "../services/uploadService.js";
 
 export const MAX_DATASHEET_SIZE_IN_BYTES = 10 * 1024 * 1024;
 
@@ -36,6 +37,18 @@ const datasheetUploader = multer({
 });
 
 export const uploadSingleDatasheet = datasheetUploader.single("datasheet");
+
+const specificationPdfUploader = multer({
+  storage: multer.diskStorage({
+    destination: (_req, _file, callback) => fs.mkdir(specificationPdfsUploadDirectory, 
+      { recursive: true }, (error) => callback(error, specificationPdfsUploadDirectory)),
+    filename: (_req, _file, callback) => callback(null, createSafeDatasheetFilename()),
+  }),
+  fileFilter,
+  limits: { fileSize: MAX_DATASHEET_SIZE_IN_BYTES },
+});
+
+export const uploadSingleSpecificationPdf = specificationPdfUploader.single("specificationPdf");
 
 export const getDatasheetUploadErrorMessage = (error: unknown): string | null => {
   if (error instanceof UploadValidationError) return error.message;

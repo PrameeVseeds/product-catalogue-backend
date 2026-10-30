@@ -8,12 +8,17 @@
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "seed:first-admin": "tsx src/seeders/createFirstAdmin.ts",
+    "migrate:specification-pdf": "node database/applySpecificationPdfMigration.mjs",
+    "migrate:enquiry-model": "node database/applyEnquiryModelMigration.mjs",
+    "migrate:product-models": "node database/applyProductModelsMigration.mjs",
+    "migrate:product-placement": "node database/applyProductPlacementMigration.mjs",
     "typecheck": "tsc --noEmit",
     "build": "tsc",
     "start": "node dist/server.js"
   },
   "license": "UNLICENSED",
   "dependencies": {
+    "@napi-rs/canvas": "^0.1.80",
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
@@ -22,6 +27,7 @@
     "multer": "^2.2.0",
     "mysql2": "^3.23.2",
     "nodemailer": "^9.0.4",
+    "pdf-parse": "^2.4.5",
     "pdfkit": "^0.19.1"
   },
   "devDependencies": {
